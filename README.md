@@ -1,12 +1,23 @@
-status: last update was dockerfile, may not be the case, "image failure investigation and (db_password duplication conflict)"
-
+Prerquisites:
 run tf-backend
 https://github.com/KeenGWatanabe/tf-backend.git
 
-# CHECK terraform step 5 - 10 (POSSIBLE ERROR IAM ECS exec_roles)
+run tf-vpc-nat-eip 
+(backend point to key= vpc/tfstate.com)
+https://github.com/KeenGWatanabe/tf-vpc-nat-eip.git
+
+edit terraform.tfvars:
+mongo_uri
+public subnets
+private subnets
+(backend point to key= ecs/tfstate.com)
+
+# CHECK terraform only ECR first
 1 cd /infra
 2 terraform init
 3 terraform apply -target=aws_ecr_repository.app
+
+# then go to step app repo dockerize and push it to above ECR
 
 
 Follow steps 3 - 4 from this Doc sheet (build and push image to created ECR)
@@ -20,7 +31,6 @@ https://docs.google.com/document/d/1HkjQakCw2Db82e5dPbWzfqm_BnWK0xHMiWXixuojW4k/
 4 terraform apply 
   # if rerun terraform (statefile)
   terraform refresh 
-
 
 
 
