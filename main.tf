@@ -3,7 +3,7 @@ terraform {
     bucket         = "ce-grp-4.tfstate-backend.com"
     key            = "g4infra/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "terraform-state-locks" # Critical for locking
+    dynamodb_table = "ce-grp-4-terraform-state-locks" # Critical for locking
   }
 }
 
