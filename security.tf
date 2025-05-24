@@ -29,7 +29,7 @@ resource "aws_security_group" "vpc_endpoint" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = [data.aws_vpc.selected.cidr_block]  # Restrict to VPC CIDR aws_vpc.main
+    cidr_blocks = [data.aws_vpc.selected.cidr_block] # Restrict to VPC CIDR aws_vpc.main
   }
 
   egress {

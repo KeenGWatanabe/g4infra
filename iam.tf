@@ -23,8 +23,8 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
 
 # Permissions for CloudWatch
 resource "aws_iam_role_policy" "ecs_logging" {
-  name   = "ecs-task-execution-logs"
-  role   = aws_iam_role.ecs_task_execution_role.name
+  name = "ecs-task-execution-logs"
+  role = aws_iam_role.ecs_task_execution_role.name
 
   policy = jsonencode({
     Version = "2012-10-17",
