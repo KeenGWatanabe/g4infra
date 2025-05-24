@@ -12,8 +12,8 @@ variable "vpc_id" {
 }
 
 variable "name_prefix" {
-  description = "ecs for ce994"
-  default     = "ce-grp-4"
+  description = "ecs for grp4"
+  default = "ce-grp-4"
 }
 
 variable "alb_subnet_ids" {
