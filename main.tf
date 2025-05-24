@@ -1,12 +1,11 @@
 terraform {
   backend "s3" {
-    bucket = "${var.name_prefix}.tfstate-backend.com"
-    key = "ecs/terraform.tfstate"
+    bucket = "ce-grp-4.tfstate-backend.com"
+    key = "g4infra/terraform.tfstate"
     region = "us-east-1"
     dynamodb_table = "terraform-state-locks"  # Critical for locking
   }
 }
-
 
 
 provider "aws" {
@@ -81,8 +80,34 @@ resource "aws_ecs_task_definition" "app" {
         "awslogs-stream-prefix" = "ecs"
       }
     }
-  }])
+  },
+  {
+  "name": "xray-daemon",
+  "image": "amazon/aws-xray-daemon:latest",
+  "essential": false,
+  "portMappings": [
+    {
+      "containerPort": 2000,
+      "protocol": "udp"
+    }
+  ],
+  "logConfiguration": {
+    "logDriver": "awslogs",
+    "options": {
+      "awslogs-group": "/ecs/your-log-group",
+      "awslogs-region": "us-east-1",
+      "awslogs-stream-prefix": "xray"
+    }
+  }
 }
+])
+
+
+
+}
+
+
+
 
 # unique ID for certain resources
 resource "random_id" "suffix" {
