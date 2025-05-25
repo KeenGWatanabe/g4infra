@@ -24,3 +24,11 @@ variable "private_subnet_ids" {
   description = "List of private subnet IDs for ECS tasks"
   type        = list(string)
 }
+
+variable "policy_arns" {
+  type = list(string)
+  default = [
+    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
+    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+  ]
+}

@@ -20,6 +20,10 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "ecs_read" {
+  role       = aws_iam_role.ecs_task_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+}
 
 # Permissions for CloudWatch
 resource "aws_iam_role_policy" "ecs_logging" {
@@ -31,9 +35,33 @@ resource "aws_iam_role_policy" "ecs_logging" {
     Statement = [
       {
         Effect   = "Allow",
-        Action   = ["logs:CreateLogStream", "logs:PutLogEvents","logs:CreateLogGroup"],
-        Resource = ["arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*", "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/xray-daemon:*"]
+        Action   = [
+          "logs:CreateLogStream", 
+          "logs:PutLogEvents",
+          "logs:CreateLogGroup",
+          "logs:DescribeLogStreams"
+          ],
+        Resource = [
+          "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*",
+          "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app", 
+          "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/xray-daemon:*",
+          "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/xray-daemon"
+          ]
       }
     ]
+  })
+}
+
+
+# Permissions for ecr_auth
+resource "aws_iam_role_policy" "ecr_auth" {
+  role   = aws_iam_role.ecs_task_execution_role.name
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action   = ["ecr:GetAuthorizationToken"],
+      Effect   = "Allow",
+      Resource = "*"
+    }]
   })
 }

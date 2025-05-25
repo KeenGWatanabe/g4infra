@@ -55,6 +55,39 @@ resource "aws_cloudwatch_log_group" "xray" {
   retention_in_days = 30
 }
 
+# unique ID for certain resources
+resource "random_id" "suffix" {
+  byte_length = 4
+}
+resource "aws_ecs_service" "app" {
+  name            = "nodejs-app-service-${random_id.suffix.hex}"
+  cluster         = module.ecs.cluster_id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = var.alb_subnet_ids # aws_subnet.private[*].id
+    security_groups  = [aws_security_group.ecs_tasks.id]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.app.arn
+    container_name   = "nodejs-app"
+    container_port   = 5000
+  }
+
+  depends_on = [aws_lb_listener.app]
+
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
+  }
+  # Forces a new deployment if task definition changes
+  force_new_deployment = true
+}
+
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "nodejs-app-task"
   network_mode             = "awsvpc"
@@ -62,6 +95,10 @@ resource "aws_ecs_task_definition" "app" {
   cpu                      = 512  #1024 
   memory                   = 1024 #2048
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  depends_on = [ 
+    aws_cloudwatch_log_group.app, 
+    aws_cloudwatch_log_group.xray 
+    ]
 
   container_definitions = jsonencode([{
     name      = "nodejs-app"
@@ -99,49 +136,11 @@ resource "aws_ecs_task_definition" "app" {
       "logConfiguration" : {
         "logDriver" : "awslogs",
         "options" : {
-          "awslogs-group" : "aws_cloudwatch_log_group.xray.name"#"/ecs/your-log-group",
-          "awslogs-region" : "us-east-1",
-          "awslogs-stream-prefix" : "xray"
+          "awslogs-group"         = "aws_cloudwatch_log_group.xray.name" #"/ecs/your-log-group",
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "xray"
         }
       }
   }])
 }
 
-# unique ID for certain resources
-resource "random_id" "suffix" {
-  byte_length = 4
-}
-resource "aws_ecs_service" "app" {
-  name            = "nodejs-app-service-${random_id.suffix.hex}"
-  cluster         = module.ecs.cluster_id
-  task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets          = var.private_subnet_ids # aws_subnet.private[*].id
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    assign_public_ip = true
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.app.arn
-    container_name   = "nodejs-app"
-    container_port   = 5000
-  }
-
-  depends_on = [aws_lb_listener.app]
-
-  lifecycle {
-    ignore_changes = [task_definition, desired_count]
-  }
-}
-
-resource "aws_ecr_repository" "app" {
-  name                 = "nodejs-app"
-  image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
