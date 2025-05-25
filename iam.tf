@@ -1,5 +1,5 @@
 resource "aws_iam_role" "ecs_task_execution_role" {
-  name = "ecs-task-execution-role"
+  name = "ecs-task-execution-role-${random_id.suffix.hex}"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -31,8 +31,8 @@ resource "aws_iam_role_policy" "ecs_logging" {
     Statement = [
       {
         Effect   = "Allow",
-        Action   = ["logs:CreateLogStream", "logs:PutLogEvents"],
-        Resource = "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*"
+        Action   = ["logs:CreateLogStream", "logs:PutLogEvents","logs:CreateLogGroup"],
+        Resource = ["arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*", "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/xray-daemon:*"]
       }
     ]
   })

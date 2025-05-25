@@ -49,6 +49,11 @@ resource "aws_cloudwatch_log_group" "app" {
   name              = "/ecs/nodejs-app"
   retention_in_days = 30
 }
+# Create CloudWatch Log Group for X-Ray
+resource "aws_cloudwatch_log_group" "xray" {
+  name              = "/ecs/xray-daemon"
+  retention_in_days = 30
+}
 
 resource "aws_ecs_task_definition" "app" {
   family                   = "nodejs-app-task"
@@ -94,7 +99,7 @@ resource "aws_ecs_task_definition" "app" {
       "logConfiguration" : {
         "logDriver" : "awslogs",
         "options" : {
-          "awslogs-group" : "/ecs/your-log-group",
+          "awslogs-group" : "aws_cloudwatch_log_group.xray.name"#"/ecs/your-log-group",
           "awslogs-region" : "us-east-1",
           "awslogs-stream-prefix" : "xray"
         }
