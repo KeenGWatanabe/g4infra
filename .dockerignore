@@ -1,0 +1,7 @@
+# Ignore local dependencies
+node_modules/
+# Ignore Git repo
+.git/
+# Ignore temporary files
+*.log
+.DS_Store
