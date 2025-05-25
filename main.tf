@@ -1,16 +1,80 @@
-terraform {
-  backend "s3" {
-    bucket         = "ce-grp-4.tfstate-backend.com"
-    key            = "g4infra/terraform.tfstate"
-    region         = "us-east-1"
-    dynamodb_table = "ce-grp-4-terraform-state-locks" # Critical for locking
+# terraform {
+#   backend "s3" {
+#     bucket         = "ce-grp-4.tfstate-backend.com"
+#     key            = "g4infra/terraform.tfstate"
+#     region         = "us-east-1"
+#     dynamodb_table = "ce-grp-4-terraform-state-locks" # Critical for locking
+#   }
+# }
+//Above commented out since backend.tf has been created.
+
+# S3 buckets for state storage
+resource "aws_s3_bucket" "tfstate_dev" {
+  bucket = "ce-grp-4-tfstate-backend-dev"
+  
+  tags = {
+    Name        = "Terraform State Dev"
+    Environment = "dev"
   }
 }
 
-
-provider "aws" {
-  region = "us-east-1"
+resource "aws_s3_bucket" "tfstate_prod" {
+  bucket = "ce-grp-4-tfstate-backend-prod"
+  
+  tags = {
+    Name        = "Terraform State Prod"
+    Environment = "prod"
+  }
 }
+
+# Enable versioning
+resource "aws_s3_bucket_versioning" "tfstate_dev" {
+  bucket = aws_s3_bucket.tfstate_dev.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_versioning" "tfstate_prod" {
+  bucket = aws_s3_bucket.tfstate_prod.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+# DynamoDB tables for state locking
+resource "aws_dynamodb_table" "tfstate_locks_dev" {
+  name         = "ce-grp-4-terraform-state-locks-dev"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
+  tags = {
+    Name        = "Terraform State Locks Dev"
+    Environment = "dev"
+  }
+}
+
+resource "aws_dynamodb_table" "tfstate_locks_prod" {
+  name         = "ce-grp-4-terraform-state-locks-prod"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
+  tags = {
+    Name        = "Terraform State Locks Prod"
+    Environment = "prod"
+  }
+}
+
 
 module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
