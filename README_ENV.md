@@ -4,8 +4,10 @@ $ terraform init
 $ terraform workspace (new)select dev
 $ terraform plan -var-file=dev.tfvars
 $ terraform apply -var-file=dev.tfvars
-$ git checkout dev
-$ git add . steps $ git push origin -u dev
+$ git checkout -b dev
+$ git add .
+$ git commit -m "msg"  
+$ git push origin -u dev
 
 # Explanation
 Yes! The `prod.tfvars` and `dev.tfvars` files themselves **do not** directly control separate Terraform state files (`.tfstate`), but they are often used in combination with **workspaces or separate backends** to isolate state between environments (dev/prod). Here’s how it works:
