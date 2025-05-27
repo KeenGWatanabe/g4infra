@@ -91,3 +91,33 @@ repo/
 - **GitHub branches** can trigger the correct combo of `.tfvars` + backend via CI/CD.
 
 Would you like a concrete example for AWS S3 backends or GitHub Actions? 😊
+
+terraform/
+├── modules/
+│   ├── alb/
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   └── outputs.tf
+│   ├── ecs/
+│   ├── network/
+│   └── ... (other logical modules)
+│
+├── environments/
+│   ├── dev/
+│   │   ├── main.tf
+│   │   ├── backend.tf
+│   │   └── dev.tfvars
+│   └── prod/
+│       ├── main.tf
+│       ├── backend.tf
+│       └── prod.tfvars
+│
+├── global/
+│   ├── provider.tf
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── data.tf
+│
+└── README.md
+
+
