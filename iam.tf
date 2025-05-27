@@ -34,19 +34,19 @@ resource "aws_iam_role_policy" "ecs_logging" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
-          "logs:CreateLogStream", 
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogStream",
           "logs:PutLogEvents",
           "logs:CreateLogGroup",
           "logs:DescribeLogStreams"
-          ],
+        ],
         Resource = [
           "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*",
-          "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app", 
+          "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app",
           "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/xray-daemon:*",
           "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/xray-daemon"
-          ]
+        ]
       }
     ]
   })
@@ -55,7 +55,7 @@ resource "aws_iam_role_policy" "ecs_logging" {
 
 # Permissions for ecr_auth
 resource "aws_iam_role_policy" "ecr_auth" {
-  role   = aws_iam_role.ecs_task_execution_role.name
+  role = aws_iam_role.ecs_task_execution_role.name
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
