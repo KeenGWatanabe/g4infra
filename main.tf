@@ -60,6 +60,7 @@ resource "aws_ecs_task_definition" "app" {
   cpu                      = 1024 #512  
   memory                   = 2048 #1024 
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn           = aws_iam_role.ecs_xray_task_role.arn
 
   container_definitions = jsonencode([
     {
@@ -79,31 +80,30 @@ resource "aws_ecs_task_definition" "app" {
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        "awslogs-group"         = "/ecs/nodejs-app"
+        "awslogs-group"         = aws_cloudwatch_log_group.app.name #"/ecs/nodejs-app"
         "awslogs-region"        = "us-east-1"
         "awslogs-stream-prefix" = "ecs"
       }
     }
-    },
+    }, # X-Ray Sidecar Container
     {
-      "name" : "xray-daemon",
-      "image" : "amazon/aws-xray-daemon:latest",
-      "essential" : false,
-      "portMappings" : [
-        {
+      name = "xray-daemon",
+      image = "amazon/aws-xray-daemon:latest",
+      essential = false,
+      portMappings = [{
           "containerPort" : 2000,
           "protocol" : "udp"
-        }
-      ],
-      "logConfiguration" : {
-        "logDriver" : "awslogs",
-        "options" : {
-          "awslogs-group" : "/ecs/xray-daemon",
-          "awslogs-region" : "us-east-1",
-          "awslogs-stream-prefix" : "xray"
+        }],
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          "awslogs-group" = aws_cloudwatch_log_group.xray.name #"/ecs/xray-daemon",
+          "awslogs-region" = "us-east-1",
+          "awslogs-stream-prefix" = "xray"
         }
       }
-  }])
+    }
+  ])
 }
 
 # unique ID for certain resources
@@ -129,11 +129,15 @@ resource "aws_ecs_service" "app" {
     container_port   = 5000
   }
 
-  depends_on = [aws_lb_listener.app]
+  depends_on = [
+    aws_lb_listener.app,
+    aws_cloudwatch_log_group.app,
+    aws_cloudwatch_log_group.xray
+    ]
 
-  lifecycle {
-    ignore_changes = [task_definition, desired_count]
-  }
+  # lifecycle {
+  #   ignore_changes = [desired_count]
+  # }
 }
 
 resource "aws_ecr_repository" "app" {

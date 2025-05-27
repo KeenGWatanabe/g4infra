@@ -33,11 +33,36 @@ resource "aws_iam_role_policy" "ecs_logging" {
         Effect   = "Allow",
         Action   = [
           "logs:CreateLogStream", 
-          "logs:PutLogEvents",
           "logs:PutLogEvents"
           ],
-        Resource = "arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*"
+        Resource = [
+          "${aws_cloudwatch_log_group.app.arn}:*",
+          "${aws_cloudwatch_log_group.xray.arn}:*"
+        ] #"arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*"
       }
     ]
   })
+}
+
+# Create ECS Task Role (for X-Ray write access)
+resource "aws_iam_role" "ecs_xray_task_role" {
+  name = "${var.name_prefix}-ecs-xray-taskrole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+          }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "xray_write_access" {
+  role       = aws_iam_role.ecs_xray_task_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
 }
