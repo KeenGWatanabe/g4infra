@@ -11,7 +11,7 @@
 # S3 buckets for state storage
 resource "aws_s3_bucket" "tfstate_dev" {
   bucket = "ce-grp-4-tfstate-backend-dev"
-  
+
   tags = {
     Name        = "Terraform State Dev"
     Environment = "dev"
@@ -20,7 +20,7 @@ resource "aws_s3_bucket" "tfstate_dev" {
 
 resource "aws_s3_bucket" "tfstate_prod" {
   bucket = "ce-grp-4-tfstate-backend-prod"
-  
+
   tags = {
     Name        = "Terraform State Prod"
     Environment = "prod"
@@ -159,10 +159,10 @@ resource "aws_ecs_task_definition" "app" {
   cpu                      = 512  #1024 
   memory                   = 1024 #2048
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  depends_on = [ 
-    aws_cloudwatch_log_group.app, 
-    aws_cloudwatch_log_group.xray 
-    ]
+  depends_on = [
+    aws_cloudwatch_log_group.app,
+    aws_cloudwatch_log_group.xray
+  ]
 
   container_definitions = jsonencode([{
     name      = "nodejs-app"
