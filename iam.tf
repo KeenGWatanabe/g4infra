@@ -38,7 +38,7 @@ resource "aws_iam_role_policy" "ecs_logging" {
         Resource = [
           "${aws_cloudwatch_log_group.app.arn}:*",
           "${aws_cloudwatch_log_group.xray.arn}:*"
-        ] #"arn:aws:logs:us-east-1:255945442255:log-group:/ecs/nodejs-app:*"
+        ] #"arn:aws:logs:us-east-1:255945442255:log-group:/ecs/${var.name_prefix}-app:*"
       }
     ]
   })

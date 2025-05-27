@@ -7,3 +7,5 @@ vpc_id = "vpc-0a1597cabbf0f26a0"
 alb_subnet_ids = ["subnet-053005045ad57eda7", "subnet-016bdf244ef5c8ccb"]
 # Private subnets from VPC repo
 private_subnet_ids = ["subnet-066df6ead2cde3a2d", "subnet-01912952711b4886e"]
+
+name_prefix = "ce-grp-4"

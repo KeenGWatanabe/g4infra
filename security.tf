@@ -1,5 +1,5 @@
 resource "aws_security_group" "ecs_tasks" {
-  name        = "nodejs-app-ecs-tasks"
+  name        = "${var.name_prefix}-app-ecs-tasks"
   description = "Allow inbound access from ALB only"
   vpc_id      = var.vpc_id # aws_vpc.main.id 
 
