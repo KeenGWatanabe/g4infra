@@ -49,16 +49,20 @@ resource "aws_cloudwatch_log_group" "app" {
   name              = "/ecs/nodejs-app"
   retention_in_days = 30
 }
-
+resource "aws_cloudwatch_log_group" "xray" {
+  name              = "/ecs/xray-daemon"
+  retention_in_days = 30
+}
 resource "aws_ecs_task_definition" "app" {
   family                   = "nodejs-app-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 512  #1024 
-  memory                   = 1024 #2048
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  cpu                      = 1024 #512  
+  memory                   = 2048 #1024 
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
 
-  container_definitions = jsonencode([{
+  container_definitions = jsonencode([
+    {
     name      = "nodejs-app"
     image     = "${aws_ecr_repository.app.repository_url}:latest"
     essential = true
@@ -94,7 +98,7 @@ resource "aws_ecs_task_definition" "app" {
       "logConfiguration" : {
         "logDriver" : "awslogs",
         "options" : {
-          "awslogs-group" : "/ecs/your-log-group",
+          "awslogs-group" : "/ecs/xray-daemon",
           "awslogs-region" : "us-east-1",
           "awslogs-stream-prefix" : "xray"
         }

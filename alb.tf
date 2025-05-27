@@ -1,5 +1,5 @@
 resource "aws_lb" "app" {
-  name               = "nodejs-app-lb"
+  name               = "${var.name_prefix}${random_id.suffix.hex}nodejs-app-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
