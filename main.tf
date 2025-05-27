@@ -52,7 +52,7 @@ resource "aws_cloudwatch_log_group" "app" {
   retention_in_days = 30
 }
 resource "aws_cloudwatch_log_group" "xray" {
-  name              = "/ecs/xray-daemon"
+  name              = "/ecs/${var.name_prefix}-xray-daemon"
   retention_in_days = 30
 }
 resource "aws_ecs_task_definition" "app" {
