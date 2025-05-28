@@ -1,4 +1,6 @@
 # so is the prod.tfvars and dev.tfvars for have separate tfstate files when terraforming?
+workspace
+
 terraform pull origin rger (dev/prod)
 $ terraform init
 $ terraform workspace new rger #do once only
@@ -6,6 +8,8 @@ $ terraform workspace select rger
 $ terraform workspace list #just to check workspace at
 $ terraform plan -var-file="rger.tfvars"
 $ terraform apply -var-file="rger.tfvars"
+----------------------------------------------------
+feature branch
 $ git checkout rger
 $ git add .
 $ git commit -m "msg"  
