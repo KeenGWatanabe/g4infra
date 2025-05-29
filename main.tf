@@ -55,6 +55,7 @@ resource "aws_cloudwatch_log_group" "xray" {
   name              = "/ecs/${var.name_prefix}-xray-daemon"
   retention_in_days = 30
 }
+# Containers Task Definition
 resource "aws_ecs_task_definition" "app" {
   family                   = "${var.name_prefix}-app-task"
   network_mode             = "awsvpc"
