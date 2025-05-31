@@ -33,7 +33,7 @@ resource "aws_lb_target_group" "app" {
 
 # 1. Request or import an SSL certificate (ACM)
 resource "aws_acm_certificate" "app" {
-  domain_name       = "yourdomain.com"  # Replace with your domain
+  domain_name       = "ce-grp-4.sctp-sandbox.com"  # Replace with your domain
   validation_method = "DNS"            # or "EMAIL"
 
   lifecycle {
