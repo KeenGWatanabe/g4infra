@@ -13,7 +13,7 @@ variable "vpc_id" {
 
 variable "name_prefix" {
   description = "ecs for grp4"
-  default = "ce-grp-4"
+  type        = string
 }
 
 variable "alb_subnet_ids" {
