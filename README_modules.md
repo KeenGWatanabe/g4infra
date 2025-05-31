@@ -1,3 +1,23 @@
+# steps
+cd /path/to/your/main/repo
+git submodule add <repository-url> G4app
+git commit -m "Added G4app as submodule"
+git submodule update --remote
+# since you can only update your own branch commit there first
+git add .
+git commit -m "add submodule"
+git push origin -u branch
+
+"
+   51d37d4..2aa49be  rger -> rger
+branch 'rger' set up to track 'origin/rger'.
+"
+the create a pull-request and check if merge is able.
+![PR merge check](/g4infra/images/PRcompare.png)
+
+
+
+
 # Creating Git Submodules in Your Repository
 
 The warning message you're seeing indicates you tried to add a regular directory that contains a Git repository to your main repository. Git is suggesting you use submodules instead, which is the correct way to include other repositories within your main repository.
