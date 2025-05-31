@@ -83,7 +83,7 @@ resource "aws_ecs_task_definition" "app" {
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        "awslogs-group"         = aws_cloudwatch_log_group.app.name #"/ecs/${var.name_prefix}-app"
+        "awslogs-group"         = aws_cloudwatch_log_group.app.name #"/ecs/${var.name_prefix}-app" ln50
         "awslogs-region"        = "us-east-1"
         "awslogs-stream-prefix" = "ecs"
       }
@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "app" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          "awslogs-group" = aws_cloudwatch_log_group.xray.name #"/ecs/xray-daemon",
+          "awslogs-group" = aws_cloudwatch_log_group.xray.name #"/ecs/xray-daemon", ln54
           "awslogs-region" = "us-east-1",
           "awslogs-stream-prefix" = "xray"
         }
@@ -133,7 +133,7 @@ resource "aws_ecs_service" "app" {
     aws_lb_listener.app,
     aws_cloudwatch_log_group.app,
     aws_cloudwatch_log_group.xray
-    ]
+    ] #ln50, ln 54
 
   # lifecycle {
   #   ignore_changes = [desired_count]
