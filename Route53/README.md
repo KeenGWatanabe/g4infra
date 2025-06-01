@@ -2,7 +2,7 @@
 # Terraform Setup for Route53 Subdomain with HTTPS
 This project uses Terraform to automate the creation of an AWS Route 53 subdomain with HTTPS support. The HTTPS is enabled by provisioning an ACM certificate and an Application Load Balancer (ALB) that routes traffic to the ECS cluster.
 
-I have tested the terraform setup. The app can be accessed from: https://ce-grp4.sctp-sandbox.com
+I have tested the terraform setup. The app can be accessed from: https://ce-grp-4.sctp-sandbox.com
 
 ---
 
