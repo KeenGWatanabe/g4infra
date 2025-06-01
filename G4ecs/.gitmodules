@@ -1,0 +1,3 @@
+[submodule "G4app"]
+	path = G4app
+	url = https://github.com/KeenGWatanabe/G4app.git
