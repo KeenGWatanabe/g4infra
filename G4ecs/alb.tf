@@ -1,5 +1,5 @@
 resource "aws_lb" "app" {
-  name               = "nodejs-app-lb"
+  name               = "${var.name_prefix}${random_id.suffix.hex}-app-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb.id]
@@ -9,12 +9,12 @@ resource "aws_lb" "app" {
 
   tags = {
     Environment = "production"
-    Application = "nodejs-app"
+    Application = "${var.name_prefix}-app"
   }
 }
 
 resource "aws_lb_target_group" "app" {
-  name        = "nodejs-app-tg"
+  name        = "${var.name_prefix}-app-tg"
   port        = 5000
   protocol    = "HTTP"
   vpc_id      = var.vpc_id # aws_vpc.main.id
@@ -30,12 +30,24 @@ resource "aws_lb_target_group" "app" {
     unhealthy_threshold = 2
   }
 }
-# ALB listener (HTTP → HTTPS redirect recommended)
-resource "aws_lb_listener" "app" {
-  load_balancer_arn = aws_lb.app.arn
-  port              = 80
-  protocol          = "HTTP"
 
+# 1. Request or import an SSL certificate (ACM)
+resource "aws_acm_certificate" "app" {
+  domain_name       = "ce-grp-4.sctp-sandbox.com"  # Replace with your domain
+  validation_method = "DNS"            # or "EMAIL"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+# 2. HTTPS Listener (443)
+resource "aws_lb_listener" "https" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"  # Recommended policy
+  certificate_arn   = aws_acm_certificate.app.arn
 
   default_action {
     type             = "forward"
@@ -43,8 +55,27 @@ resource "aws_lb_listener" "app" {
   }
 }
 
+# 3. Update HTTP Listener (80) to redirect to HTTPS
+resource "aws_lb_listener" "app" {
+  load_balancer_arn = aws_lb.app.arn
+  port              = 80
+  protocol          = "HTTP"
+
+
+  default_action {
+    type             = "redirect"
+    
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+    # target_group_arn = aws_lb_target_group.app.arn
+  }
+}
+
 resource "aws_security_group" "alb" {
-  name        = "nodejs-app-alb-sg"
+  name        = "${var.name_prefix}-app-alb-sg"
   description = "Allow HTTP/HTTPS inbound traffic"
   vpc_id      = var.vpc_id #aws_vpc.main.id 
 
@@ -69,6 +100,7 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags = {
-    Name = "nodejs-app-alb-sg"
+    Name = "${var.name_prefix}-app-alb-sg"
   }
 }
+

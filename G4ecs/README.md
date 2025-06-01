@@ -22,7 +22,8 @@ docker tag your-app-name:latest your-account-id.dkr.ecr.us-east-1.amazonaws.com/
 docker push your-account-id.dkr.ecr.us-east-1.amazonaws.com/your-app-name:latest
 
 # new deployment in ECS
-aws ecs update-service --cluster nodejs-app-cluster --service nodejs-app-service --force-new-deployment
+once successful tasks and services, go to website
+ECS > Clusters > `cluster-name` > Services > `service-name` > Configuration > DNS names 
 
 # recreate cluster via cli
 aws ecs create-service \

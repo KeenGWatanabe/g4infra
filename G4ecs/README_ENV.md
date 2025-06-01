@@ -1,5 +1,26 @@
 # so is the prod.tfvars and dev.tfvars for have separate tfstate files when terraforming?
+workspace
 
+terraform pull origin rger (dev/prod)
+$ terraform init
+$ terraform workspace new rger #do once only
+$ terraform workspace select rger
+$ terraform workspace list #just to check workspace at
+$ terraform plan -var-file="rger.tfvars"
+$ terraform apply -var-file="rger.tfvars"
+----------------------------------------------------
+feature branch
+$ git checkout rger
+$ git add .
+$ git commit -m "msg"  
+$ git push origin -u rger
+
+
+# cli force deployment
+$ aws ecs update-service --cluster <cluster-name> --service <service-name> --force-new-deployment
+$ aws ecs update-service --cluster ce-grp-4-app-cluster --service ce-grp-4-app-service-7fcb8e53 --force-new-deployment
+
+# Explanation
 Yes! The `prod.tfvars` and `dev.tfvars` files themselves **do not** directly control separate Terraform state files (`.tfstate`), but they are often used in combination with **workspaces or separate backends** to isolate state between environments (dev/prod). Here’s how it works:
 
 ---

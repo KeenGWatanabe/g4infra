@@ -1,0 +1,11 @@
+# CE-GRP-4 PROJECT SHEET (copy paste screenshots, write-ups in this file)
+
+
+# DISCOVERY / LEARNING JOURNEY
+(team) Ideas can actually move projects forward, thanks to the online meetings feedbacks, suggestions, forward thinking and goals oriented solutions.
+
+(roger) I can actually comment out resource already in aws just by using data reference and continue testing my IaC runs.
+![data feature](/images/dataFeature.png)
+
+# CHALLENGES 
+(roger) Coordinating the project on a part-time basis with diverse tech knowledge levels and understanding.
