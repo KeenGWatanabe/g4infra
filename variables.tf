@@ -1,9 +1,15 @@
-# How to reference in other places
-
 variable "MONGO_URI" {
   description = "MongoDB Atlas connection URI"
   type        = string
   sensitive   = true
+}
+variable "environment" {
+  description = "Deployment environment (dev/prod)"
+  type        = string
+  validation {
+    condition     = contains(["dev", "prod"], var.environment)
+    error_message = "Environment must be 'dev' or 'prod'."
+  }
 }
 
 variable "vpc_id" {
@@ -13,7 +19,7 @@ variable "vpc_id" {
 
 variable "name_prefix" {
   description = "ecs for grp4"
-  default     = "ce-grp-4"
+  type        = string
 }
 
 variable "alb_subnet_ids" {
@@ -23,12 +29,4 @@ variable "alb_subnet_ids" {
 variable "private_subnet_ids" {
   description = "List of private subnet IDs for ECS tasks"
   type        = list(string)
-}
-
-variable "policy_arns" {
-  type = list(string)
-  default = [
-    "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
-    "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  ]
 }

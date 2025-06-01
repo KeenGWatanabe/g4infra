@@ -1,86 +1,15 @@
-# terraform {
-#   backend "s3" {
-#     bucket         = "ce-grp-4.tfstate-backend.com"
-#     key            = "g4infra/terraform.tfstate"
-#     region         = "us-east-1"
-#     dynamodb_table = "ce-grp-4-terraform-state-locks" # Critical for locking
-#   }
-# }
-//Above commented out since backend.tf has been created.
-
-# S3 buckets for state storage
-resource "aws_s3_bucket" "tfstate_dev" {
-  bucket = "ce-grp-4-tfstate-backend-dev"
-
-  tags = {
-    Name        = "Terraform State Dev"
-    Environment = "dev"
-  }
+provider "aws" {
+  region = "us-east-1"
 }
-
-resource "aws_s3_bucket" "tfstate_prod" {
-  bucket = "ce-grp-4-tfstate-backend-prod"
-
-  tags = {
-    Name        = "Terraform State Prod"
-    Environment = "prod"
-  }
+# unique ID for certain resources
+resource "random_id" "suffix" {
+  byte_length = 4
 }
-
-# Enable versioning
-resource "aws_s3_bucket_versioning" "tfstate_dev" {
-  bucket = aws_s3_bucket.tfstate_dev.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_versioning" "tfstate_prod" {
-  bucket = aws_s3_bucket.tfstate_prod.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-# DynamoDB tables for state locking
-resource "aws_dynamodb_table" "tfstate_locks_dev" {
-  name         = "ce-grp-4-terraform-state-locks-dev"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
-  tags = {
-    Name        = "Terraform State Locks Dev"
-    Environment = "dev"
-  }
-}
-
-resource "aws_dynamodb_table" "tfstate_locks_prod" {
-  name         = "ce-grp-4-terraform-state-locks-prod"
-  billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "LockID"
-
-  attribute {
-    name = "LockID"
-    type = "S"
-  }
-
-  tags = {
-    Name        = "Terraform State Locks Prod"
-    Environment = "prod"
-  }
-}
-
-
 module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
   version = "~> 5.0"
 
-  cluster_name = "nodejs-app-cluster"
+  cluster_name = "${var.name_prefix}-app-cluster"
   cluster_configuration = {
     execute_command_configuration = {
       logging = "OVERRIDE"
@@ -105,67 +34,30 @@ module "ecs" {
 
   tags = {
     Environment = "production"
-    Application = "nodejs-app"
+    Application = "${var.name_prefix}-app"
   }
 }
 # Create CLoudWatch Log Group for taskDef reference
 resource "aws_cloudwatch_log_group" "app" {
-  name              = "/ecs/nodejs-app"
+  name              = "/ecs/${var.name_prefix}-app"
   retention_in_days = 30
 }
-# Create CloudWatch Log Group for X-Ray
 resource "aws_cloudwatch_log_group" "xray" {
-  name              = "/ecs/xray-daemon"
+  name              = "/ecs/${var.name_prefix}-xray-daemon"
   retention_in_days = 30
 }
-
-# unique ID for certain resources
-resource "random_id" "suffix" {
-  byte_length = 4
-}
-resource "aws_ecs_service" "app" {
-  name            = "nodejs-app-service-${random_id.suffix.hex}"
-  cluster         = module.ecs.cluster_id
-  task_definition = aws_ecs_task_definition.app.arn
-  desired_count   = 1
-  launch_type     = "FARGATE"
-
-  network_configuration {
-    subnets          = var.alb_subnet_ids # aws_subnet.private[*].id
-    security_groups  = [aws_security_group.ecs_tasks.id]
-    assign_public_ip = true
-  }
-
-  load_balancer {
-    target_group_arn = aws_lb_target_group.app.arn
-    container_name   = "nodejs-app"
-    container_port   = 5000
-  }
-
-  depends_on = [aws_lb_listener.app]
-
-  lifecycle {
-    ignore_changes = [task_definition, desired_count]
-  }
-  # Forces a new deployment if task definition changes
-  force_new_deployment = true
-}
-
-
 resource "aws_ecs_task_definition" "app" {
-  family                   = "nodejs-app-task"
+  family                   = "${var.name_prefix}-app-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 512  #1024 
-  memory                   = 1024 #2048
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  depends_on = [
-    aws_cloudwatch_log_group.app,
-    aws_cloudwatch_log_group.xray
-  ]
+  cpu                      = 1024 #512  
+  memory                   = 2048 #1024 
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn           = aws_iam_role.ecs_xray_task_role.arn
 
-  container_definitions = jsonencode([{
-    name      = "nodejs-app"
+  container_definitions = jsonencode([
+    {
+    name      = "${var.name_prefix}-app"
     image     = "${aws_ecr_repository.app.repository_url}:latest"
     essential = true
     portMappings = [{
@@ -181,30 +73,68 @@ resource "aws_ecs_task_definition" "app" {
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        "awslogs-group"         = "/ecs/nodejs-app"
+        "awslogs-group"         = aws_cloudwatch_log_group.app.name #"/ecs/${var.name_prefix}-app"
         "awslogs-region"        = "us-east-1"
         "awslogs-stream-prefix" = "ecs"
       }
     }
-    },
+    }, # X-Ray Sidecar Container
     {
-      "name" : "xray-daemon",
-      "image" : "amazon/aws-xray-daemon:latest",
-      "essential" : false,
-      "portMappings" : [
-        {
+      name = "xray-daemon",
+      image = "amazon/aws-xray-daemon:latest",
+      essential = false,
+      portMappings = [{
           "containerPort" : 2000,
           "protocol" : "udp"
-        }
-      ],
-      "logConfiguration" : {
-        "logDriver" : "awslogs",
-        "options" : {
-          "awslogs-group"         = "aws_cloudwatch_log_group.xray.name" #"/ecs/your-log-group",
-          "awslogs-region"        = "us-east-1"
+        }],
+      logConfiguration = {
+        logDriver = "awslogs",
+        options = {
+          "awslogs-group" = aws_cloudwatch_log_group.xray.name #"/ecs/xray-daemon",
+          "awslogs-region" = "us-east-1",
           "awslogs-stream-prefix" = "xray"
         }
       }
-  }])
+    }
+  ])
 }
 
+
+resource "aws_ecs_service" "app" {
+  name            = "${var.name_prefix}-app-service-${random_id.suffix.hex}"
+  cluster         = module.ecs.cluster_id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = var.private_subnet_ids # aws_subnet.private[*].id
+    security_groups  = [aws_security_group.ecs_tasks.id]
+    assign_public_ip = true
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.app.arn
+    container_name   = "${var.name_prefix}-app"
+    container_port   = 5000
+  }
+
+  depends_on = [
+    aws_lb_listener.app,
+    aws_cloudwatch_log_group.app,
+    aws_cloudwatch_log_group.xray
+    ]
+
+  # lifecycle {
+  #   ignore_changes = [desired_count]
+  # }
+}
+
+resource "aws_ecr_repository" "app" {
+  name                 = "${var.name_prefix}-app"
+  image_tag_mutability = "MUTABLE"
+
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}

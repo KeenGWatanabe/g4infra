@@ -1,4 +1,6 @@
-bucket_region  = "us-east-1"
-bucket_env     = "dev"
-bucket_name    = "ce-grp-4-dev"
+bucket_region = "sg"
+bucket_env = "daisy-dev"
+bucket_name = "ce-grp-4"
 bucket_ran_num = "456"
+
+environment = "dev"
