@@ -8,4 +8,9 @@
 ![data feature](/images/dataFeature.png)
 
 # CHALLENGES 
-(roger) Coordinating the project on a part-time basis with diverse tech knowledge levels and understanding.
+(roger) Coordinating the project on a part-time basis with diverse tech knowledge levels and understanding.  Along the way, expectations changes, unknown challenges surfaces and have to reorg, restrategise the approach to completing the project.
+
+# PROJECT MANAGEMENT
+(team) To differentiate test run and the live resources on AWS, we implement name differentiation in resource naming like so.
+![name_prefix](/g4infra/images/namePrefix.png)
+
