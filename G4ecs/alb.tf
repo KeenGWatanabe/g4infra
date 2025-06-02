@@ -70,7 +70,7 @@ resource "aws_lb_listener" "app" {
       protocol    = "HTTPS"
       status_code = "HTTP_301"
     }
-    # target_group_arn = aws_lb_target_group.app.arn
+   
   }
 }
 
