@@ -1,0 +1,53 @@
+name: Snyk ECS Infrastructure Scan
+
+on:
+  push:
+    branches: [ "prod", "main" ]  # Triggers on both branches
+  pull_request:
+    branches: [ "prod", "main" ]
+
+jobs:
+  snyk-iac:
+    name: Snyk IaC Scan (ECS)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      # Scan all Terraform files in G4ecs directory
+      - name: Snyk ECS Terraform Scan
+        uses: snyk/actions/iac@master
+        with:
+          file: ./G4ecs  # Targets your ECS Terraform dir
+          args: --severity-threshold=high --target=aws_ecs
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      # Optional: Module dependency scan
+      - name: Scan Terraform Modules
+        if: failure()  # Only runs if IaC scan fails
+        run: |
+          cd G4ecs
+          snyk iac test --severity-threshold=high --detection-depth=5
+
+  snyk-container:
+    name: Snyk Container Scan
+    runs-on: ubuntu-latest
+    needs: snyk-iac
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      # Assumes you have a Dockerfile in the ECS directory
+      - name: Build ECS Container
+        run: |
+          cd G4ecs
+          docker build -t ecs-app .
+
+      - name: Scan ECS Container Image
+        uses: snyk/actions/docker@master
+        with:
+          image: ecs-app
+          args: --severity-threshold=high --app-vulns
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
