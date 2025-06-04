@@ -1,6 +1,6 @@
 # How to reference in other places
 
-variable "MONGO_URI" {
+variable "MONGODB_URI" {
   description = "MongoDB Atlas connection URI"
   type        = string
   sensitive   = true
@@ -23,4 +23,11 @@ variable "alb_subnet_ids" {
 variable "private_subnet_ids" {
   description = "List of private subnet IDs for ECS tasks"
   type        = list(string)
+}
+
+variable "region" {
+  description = "AWS region where resources will be created"
+  type        = string
+  default     = "us-east-1"
+  
 }
