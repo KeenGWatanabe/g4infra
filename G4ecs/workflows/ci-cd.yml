@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [daisy]
   pull_request:
-    branches: [main]
+    branches: [daisy]
 
 jobs:
   terraform-checks:
