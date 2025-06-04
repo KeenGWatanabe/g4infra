@@ -9,6 +9,12 @@ $ terraform workspace list #just to check workspace at
 $ terraform plan -var-file="rger.tfvars"
 $ terraform apply -var-file="rger.tfvars"
 ----------------------------------------------------
+# running multiple ECS with the same code, amend terraform.tfvars
+name_prefix = "ce-grp-4*" (replace * with alphabet or version number)
+$ terraform init -reconfigure (this adapt s3 backend statefile)
+$ terraform apply
+----------------------------------------------------
+# git update feature branch
 feature branch
 $ git checkout rger
 $ git add .
