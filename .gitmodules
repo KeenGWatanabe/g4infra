@@ -1,9 +1,6 @@
 [submodule "route53"]
 	path = route53
 	url = https://github.com/agusjuli/ce-grp4-route53-dns-https
-[submodule "vpc"]
-	path = vpc
-	url = https://github.com/SJArpita/arp-tf-vpc-nat-eip-ec2
 [submodule "secrets"]
 	path = secrets
 	url = https://github.com/hinotosho/tf-secrets-capstone
@@ -13,3 +10,6 @@
 [submodule "app"]
 	path = app
 	url = https://github.com/KeenGWatanabe/g4app
+[submodule "vpc2"]
+	path = vpc2
+	url = https://github.com/SJArpita/arp-tf-vpc-nat-eip-ec2
