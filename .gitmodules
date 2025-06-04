@@ -1,6 +1,3 @@
-[submodule "tf-backend"]
-	path = tf-backend
-	url = https://github.com/KeenGWatanabe/tf-backend
 [submodule "route53"]
 	path = route53
 	url = https://github.com/agusjuli/ce-grp4-route53-dns-https
