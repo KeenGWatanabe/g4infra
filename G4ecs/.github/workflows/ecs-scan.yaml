@@ -2,9 +2,9 @@ name: Snyk ECS Infrastructure Scan
 
 on:
   push:
-    branches: [ "prod", "main" ]  # Triggers on both branches
+    branches: [ "rger", "prod", "main" ]  # Triggers on both branches
   pull_request:
-    branches: [ "prod", "main" ]
+    branches: [ "rger", "prod", "main" ]
 
 jobs:
   snyk-iac:
