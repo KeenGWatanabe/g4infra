@@ -20,3 +20,8 @@ data "aws_subnets" "public" {
 data "aws_vpc" "selected" {
   id = var.vpc_id # Your existing vpc_id variable
 }
+
+
+data "aws_caller_identity" "current" {
+  id = "current"
+}
