@@ -8,4 +8,4 @@ alb_subnet_ids = ["subnet-053005045ad57eda7", "subnet-016bdf244ef5c8ccb"]
 # Private subnets from VPC repo
 private_subnet_ids = ["subnet-066df6ead2cde3a2d", "subnet-01912952711b4886e"]
 
-name_prefix = "ce-grp-4u"
+name_prefix = "ce-grp-4t"

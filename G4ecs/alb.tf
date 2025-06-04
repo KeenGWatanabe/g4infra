@@ -103,4 +103,3 @@ resource "aws_security_group" "alb" {
     Name = "${var.name_prefix}-app-alb-sg"
   }
 }
-
