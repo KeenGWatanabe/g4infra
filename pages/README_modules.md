@@ -11,11 +11,11 @@ git push origin -u branch
 ```
 -----------------CAUTION!---------------
 # Removing submodules
-git submodule deinit -f tf-backend
-git rm -f tf-backend
-Remove-Item -Recurse -Force tf-backend
-git config -f .gitmodules --remove-section submodule.tf-backend
-git config -f .git/config --remove-section submodule.tf-backend
+git submodule deinit -f vpc
+git rm -f vpc
+Remove-Item -Recurse -Force vpc
+git config -f .gitmodules --remove-section submodule.vpc
+git config -f .git/config --remove-section submodule.vpc
 
 git add .gitmodules
 git commit -m "Removed tf-backend submodule"
