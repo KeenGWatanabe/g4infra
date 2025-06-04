@@ -10,3 +10,6 @@
 [submodule "backend"]
 	path = backend
 	url = https://github.com/rlwp/tf-backend
+[submodule "app"]
+	path = app
+	url = https://github.com/KeenGWatanabe/g4app
