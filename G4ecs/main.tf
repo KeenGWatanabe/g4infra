@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket         = "ce-grp-4.tfstate-backend.com"
-    key            = "rger/terraform.tfstate"
+    key            = "secrets1/terraform.tfstate"
     region         = "us-east-1"
     dynamodb_table = "ce-grp-4-terraform-state-locks" # Critical for locking
   }
@@ -14,6 +14,18 @@ provider "aws" {
 resource "random_id" "suffix" {
   byte_length = 4
 }
+
+## reference by data to tf-secrets ##########################
+data "aws_secretsmanager_secret" "mongodb_uri" {
+  # arn = "arn:aws:secretsmanager:us-east-1:255945442255:secret:prod/mongodb_uri-QX0TxF"
+  name = "prod/mongodb_uri"
+}
+ 
+## reference the secret version
+data "aws_secretsmanager_secret_version" "mongodb_uri" {
+  secret_id = data.aws_secretsmanager_secret.mongodb_uri.id
+}
+#############################################################
 module "ecs" {
   source  = "terraform-aws-modules/ecs/aws"
   version = "~> 5.0"
@@ -47,9 +59,13 @@ module "ecs" {
   }
 }
 # Create CLoudWatch Log Group for taskDef reference
-resource "aws_cloudwatch_log_group" "app" {
-  name              = "/ecs/${var.name_prefix}-app"
-  retention_in_days = 30
+# resource "aws_cloudwatch_log_group" "ecs_logs" {
+#   name              = "/ecs/${var.name_prefix}-app-service"
+#   retention_in_days = 30
+# }
+data "aws_cloudwatch_log_group" "ecs_logs" {
+  name = "/ecs/ce-grp-4t-app-service-f48ddcab"
+  # retention_in_days = 30
 }
 resource "aws_cloudwatch_log_group" "xray" {
   name              = "/ecs/${var.name_prefix}-xray-daemon"
@@ -60,9 +76,9 @@ resource "aws_ecs_task_definition" "app" {
   family                   = "${var.name_prefix}-app-task"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 1024 #512  
-  memory                   = 2048 #1024 
-  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  cpu                      = 256 #512  
+  memory                   = 512 #1024 
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn           = aws_iam_role.ecs_xray_task_role.arn
 
   container_definitions = jsonencode([
@@ -74,17 +90,22 @@ resource "aws_ecs_task_definition" "app" {
       containerPort = 5000
       hostPort      = 5000
     }]
-    environment = [
+    ## secrets for app, g4infra using "environment ln77"
+   
+    secrets = [
       {
-        name  = "MONGODB_ATLAS_URI"
-        value = var.MONGO_URI
+        name  = "MONGODB_URI",
+        # valueFrom = "arn:aws:secretsmanager:us-east-1:255945442255:secret:prod/mongodb_uri-QX0TxF"
+        # valueFrom = "${data.aws_secretsmanager_secret.mongodb_uri.arn}:MONGODB_URI::"
+        valueFrom = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:prod/mongodb_uri*"
+        #valueFrom = "prod/mongodb_uri"
       }
     ]
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        "awslogs-group"         = aws_cloudwatch_log_group.app.name #"/ecs/${var.name_prefix}-app" ln50
-        "awslogs-region"        = "us-east-1"
+        "awslogs-group"         = data.aws_cloudwatch_log_group.ecs_logs.name #"/ecs/${var.name_prefix}-app-service-f48ddcab" #ln66
+        "awslogs-region"        = var.region
         "awslogs-stream-prefix" = "ecs"
       }
     }
@@ -100,16 +121,14 @@ resource "aws_ecs_task_definition" "app" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          "awslogs-group" = aws_cloudwatch_log_group.xray.name #"/ecs/xray-daemon", ln54
-          "awslogs-region" = "us-east-1",
+          "awslogs-group" = aws_cloudwatch_log_group.xray.name #"/ecs/xray-daemon", ln69
+          "awslogs-region" = var.region,
           "awslogs-stream-prefix" = "xray"
         }
       }
     }
   ])
 }
-
-
 resource "aws_ecs_service" "app" {
   name            = "${var.name_prefix}-app-service-${random_id.suffix.hex}"
   cluster         = module.ecs.cluster_id
@@ -128,12 +147,11 @@ resource "aws_ecs_service" "app" {
     container_name   = "${var.name_prefix}-app"
     container_port   = 5000
   }
-
   depends_on = [
     aws_lb_listener.app,
-    aws_cloudwatch_log_group.app,
+    data.aws_cloudwatch_log_group.ecs_logs,
     aws_cloudwatch_log_group.xray
-    ] #ln50, ln 54
+    ]  #ln66, ln69
 
   # lifecycle {
   #   ignore_changes = [desired_count]
@@ -148,3 +166,8 @@ resource "aws_ecr_repository" "app" {
     scan_on_push = true
   }
 }
+
+# code base everything same as g4infra main.tf 
+# g4infra call mongodb_uri in Environment
+# tfsecretsECS call mongodb_uri in Secrets
+# ln18-ln29 is secrets manager items 
