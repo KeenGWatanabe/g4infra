@@ -11,7 +11,7 @@
 # 6 Application Load Balancers Map
 ![ECSloadBalancers](/images/ECSloadBalancers.png)
 # 7 ECS Monitoring tab 
-![ECSmonitoring](/g4infra/images/ECSmonitoring.png)
+![ECSmonitoring](/images/ECSmonitoring.png)
 
 # 8 Infrastructure Diagram
-![ECSinfra](/g4infra/images/ECSinfra.png)
+![ECSinfra](/images/ECSinfra.png)
