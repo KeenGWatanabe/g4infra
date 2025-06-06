@@ -1,4 +1,4 @@
 Doing the git pull-request thing.
-![GitPullRequest](/images/GitPullRequest.png)
+![GitPullRequest](/g4infra/images/GitPullRequest.png)
 Terraforming aws resources.
-![ECS IAM config](/images/ecsIAMconfig.png)
+![ECS IAM config](/g4infra/images/ecsIAMconfig.png)
