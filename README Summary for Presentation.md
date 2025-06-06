@@ -1,7 +1,8 @@
-<H2>For ECS part here is the Group 4 project capstone summary:</H2>
+<H1>For ECS part here is the Group 4 project capstone summary:</H1>
 
-Overview of Role-Based Access in AWS ECS
-•	Tasks (Containers) assume Roles → Roles have attached Policies → Policies grant Permissions to AWS services.
+<h2>Overview of Role-Based Access in AWS ECS</h2>
+•	Tasks (Containers) assume Roles → Roles have attached Policies → Policies grant Permissions to AWS services. <BR>
+
 Key Components
 1. ECS Execution Role (aws_iam_role.ecs_execution_role) <BR>
 •	This role is assumed by ECS tasks (sts:AssumeRole) to enable execution. <BR>
@@ -27,6 +28,7 @@ o	"logs:PutLogEvents" <BR>
 4. CloudWatch Log Groups
 •	Application Logs: aws_cloudwatch_log_group.app ("/ecs/${var.name_prefix}-app") <BR>
 •	X-Ray Logs: aws_cloudwatch_log_group.xray ("/ecs/${var.name_prefix}-xray-daemon") <BR>
+
 Summary of Flow <BR>
 •	ECS tasks assume ecs_execution_role, which enables execution. <BR>
 •	CloudWatch Logs capture task activity using ecs_logging permissions. <BR>
@@ -97,7 +99,7 @@ o	SecretsManagerReadWrite → Allows the task to retrieve secrets securely. <BR>
 secrets = [{ name = "MONGODB_URI" valueFrom = aws_secretsmanager_secret.mongo_uri.arn }]  <BR>
 •	This ensures no hardcoded sensitive information in the task. <BR>
 
-Summary of Flow <BR>
+<h2>Summary of Flow</h2> <BR>
 1.	ECS Tasks assume a Role to execute. <BR>
 2.	Policies grant access to resources like logging and Secrets Manager. <BR>
 3.	Secrets are injected dynamically into ECS tasks, preventing exposure. <BR>
