@@ -1,18 +1,18 @@
 Mongo Atlass User role access administration
-![mongo_userrole](/g4infra/images/mongo_userrole.png)
+![mongo_userrole](/images/mongo_userrole.png)
 
 Monitoring database status screenshots
-![mongo_status](/g4infra/images/mongo_status.png)
+![mongo_status](/images/mongo_status.png)
 
 Notification alert from MongoDB Atlas
-![mongo_alert](/g4infra/images/mongo_alert.png)
+![mongo_alert](/images/mongo_alert.png)
 
 
 
 
 
 Sign-in Alert
-![mongo_signin](/g4infra/images/mongo_signin.png)
+![mongo_signin](/images/mongo_signin.png)
 
 
 Mongo Console
