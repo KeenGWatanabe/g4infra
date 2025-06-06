@@ -1,6 +1,6 @@
 # 1. Application Load Balancer (ALB) Configuration (alb.tf)
 
-[!Resources_alb](/images/RESOURCES_ALB.png)
+[!Resources_alb](/g4infra/images/RESOURCES_ALB.png)
 
 ALB Resource (aws_lb.app): Creates an internet-facing Application Load Balancer to distribute incoming traffic across ECS tasks.
 
@@ -15,12 +15,12 @@ HTTP Listener (aws_lb_listener.app): Sets up the ALB to listen on port 80 (HTTP)
 
 Security Group for ALB (aws_security_group.alb): Allows inbound HTTP (port 80) and HTTPS (port 443) traffic from any source and permits all outbound traffic.
 
-![RESOURCES_listeners](/images/RESOURCES_listenrers.png)
+![RESOURCES_listeners](/g4infra/images/RESOURCES_listenrers.png)
 
 # 2 Data Sources (data.tf)
-![RESOURCES_data1](/images/RESOURCES_data1.png)
+![RESOURCES_data1](/g4infra/images/RESOURCES_data1.png)
 
-![RESOURCES_data2](/images/RESOURCES_data2.png)
+![RESOURCES_data2](/g4infra/images/RESOURCES_data2.png)
 
 Subnets (aws_subnets.private & aws_subnets.public): Fetches information about private and public subnets within the specified VPC. These are used to place the ALB and ECS tasks appropriately.
 
@@ -28,7 +28,7 @@ VPC (aws_vpc.selected): Retrieves details about the VPC where resources are depl
 
 # 3 IAM roles and policies (iam.tf)
 
-![RESOURCES_IAM](/images/resources_iam.png)
+![RESOURCES_IAM](/g4infra/images/resources_iam.png)
 
 ECS Execution Role (aws_iam_role.ecs_execution_role): Grants ECS tasks permissions to pull container images and publish logs to CloudWatch.
 
@@ -41,13 +41,13 @@ X-Ray Task Role (aws_iam_role.ecs_xray_task_role): Provides ECS tasks with permi
 X-Ray Policy Attachment (aws_iam_role_policy_attachment.xray_write_access): Attaches the AWS-managed policy AWSXRayDaemonWriteAccess to the X-Ray task role.spacelift.io+1geeksforgeeks.org+1
 
 # Main configuration (main.tf)
-![Resources_main1](/images/resources_main1.png)
+![Resources_main1](/g4infra/images/resources_main1.png)
 
-![Resources_main2](/images/resources_main2.png)
+![Resources_main2](/g4infra/images/resources_main2.png)
 
-![Resources_main3](/images/resources_main3.png)
+![Resources_main3](/g4infra/images/resources_main3.png)
 
-![Resources_main4](/images/resources_main4.png)
+![Resources_main4](/g4infra/images/resources_main4.png)
 
 Terraform Backend: Stores Terraform state in an S3 bucket with state locking managed by DynamoDB to prevent concurrent modifications.
 
@@ -73,7 +73,7 @@ ECR Repository (aws_ecr_repository.app): Creates an Elastic Container Registry t
 Variables (variables.tf & variable.tf): Defines input variables such as MONGO_URI, vpc_id, name_prefix, alb_subnet_ids, and private_subnet_ids to parameterize the Terraform configuration.
 
 Environment-Specific Variables (terraform.tfvars, dev.tfvars, prod.tfvars, rger.tfvars): Provides values for the defined variables tailored to different environments (development, production, etc.).
-![resources_var](/images/resources_var.png)
+![resources_var](/g4infra/images/resources_var.png)
 # 7 Outputs (outputs.tf)
 ECS Cluster Name: Outputs the name of the ECS cluster for reference.
 
@@ -83,22 +83,22 @@ This Terraform configuration sets up a scalable, secure, and observable infrastr
 Sources
 
 # Cloudwatch
-![CloudWatch1](/images/CloudWatch1.png)
+![CloudWatch1](/g4infra/images/CloudWatch1.png)
 
-![CloudWatch2](/images/Cloudwatch2.png)
+![CloudWatch2](/g4infra/images/Cloudwatch2.png)
 
-![Cloudwatch3](/images/Cloudwatch3.png)
+![Cloudwatch3](/g4infra/images/Cloudwatch3.png)
 
-![Cloudwatch4](/images/Cloudwatch4.png)
+![Cloudwatch4](/g4infra/images/Cloudwatch4.png)
 
-![Cloudwatch5](/images/Cloudwatch5.png)
+![Cloudwatch5](/g4infra/images/Cloudwatch5.png)
 
-![Cloudwatch6](/images/Cloudwatch6.png)
+![Cloudwatch6](/g4infra/images/Cloudwatch6.png)
 
-![Cloudwatch7](/images/Cloudwatch7.png)
+![Cloudwatch7](/g4infra/images/Cloudwatch7.png)
 
 # Dashboard
 
-![Dashboard1](/images/Dashboard1.png)
+![Dashboard1](/g4infra/images/Dashboard1.png)
 
-![Dashboard2](/images/Dashboard2.png)
+![Dashboard2](/g4infra/images/Dashboard2.png)
