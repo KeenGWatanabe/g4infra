@@ -98,3 +98,7 @@ Sources
 ![Cloudwatch7](/images/Cloudwatch7.png)
 
 # Dashboard
+
+![Dashboard1](/images/Dashboard1.png)
+
+![Dashboard2](/images/Dashboard2.png)
