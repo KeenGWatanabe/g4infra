@@ -16,19 +16,19 @@ Sign-in Alert
 
 
 Mongo Console
-![mongo_console](/g4infra/images/mongo_console.png)
+![mongo_console](/images/mongo_console.png)
 
 Data Administration Screen (add, export, update, delete)
-![mongo_admin](/g4infra/images/mongo_crud.png)
+![mongo_admin](/images/mongo_crud.png)
 
 Data indexing
-![mongo_indexing](/g4infra/images/mongo_indexing.png)
+![mongo_indexing](/images/mongo_indexing.png)
 
 Data Validation screen
-![mongo_validate](/g4infra/images/mongo_validate.png)
+![mongo_validate](/images/mongo_validate.png)
 
 Mongo CLI
-![mongo_cli](/g4infra/images/mongo_cli.png)
+![mongo_cli](/images/mongo_cli.png)
 
 Portability, can share schema via JSON
-![mongo_portability](/g4infra/images/mongo_portability.png)
+![mongo_portability](/images/mongo_portability.png)
