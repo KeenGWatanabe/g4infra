@@ -1,4 +1,4 @@
-<H1>For ECS part here is the Group 4 project capstone summary:</H1>
+<H1>Group 4 project capstone summary:</H1>
 
 <h2>Overview of Role-Based Access in AWS ECS</h2>
 •	Tasks (Containers) assume Roles → Roles have attached Policies → Policies grant Permissions to AWS services. <BR>
