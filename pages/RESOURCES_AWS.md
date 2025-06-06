@@ -73,7 +73,7 @@ ECR Repository (aws_ecr_repository.app): Creates an Elastic Container Registry t
 Variables (variables.tf & variable.tf): Defines input variables such as MONGO_URI, vpc_id, name_prefix, alb_subnet_ids, and private_subnet_ids to parameterize the Terraform configuration.
 
 Environment-Specific Variables (terraform.tfvars, dev.tfvars, prod.tfvars, rger.tfvars): Provides values for the defined variables tailored to different environments (development, production, etc.).
-
+![resources_var](/images/resources_var.png)
 # 7 Outputs (outputs.tf)
 ECS Cluster Name: Outputs the name of the ECS cluster for reference.
 
@@ -83,5 +83,18 @@ This Terraform configuration sets up a scalable, secure, and observable infrastr
 Sources
 
 # Cloudwatch
+![CloudWatch1](/images/CloudWatch1.png)
+
+![CloudWatch2](/images/Cloudwatch2.png)
+
+![Cloudwatch3](/images/Cloudwatch3.png)
+
+![Cloudwatch4](/images/Cloudwatch4.png)
+
+![Cloudwatch5](/images/Cloudwatch5.png)
+
+![Cloudwatch6](/images/Cloudwatch6.png)
+
+![Cloudwatch7](/images/Cloudwatch7.png)
 
 # Dashboard
