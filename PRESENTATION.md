@@ -12,5 +12,5 @@
 
 # PROJECT MANAGEMENT
 (team) To differentiate test run and the live resources on AWS, we implement name differentiation in resource naming like so.
-![name_prefix](/g4infra/images/namePrefix.png)
+![name_prefix](/images/namePrefix.png)
 
