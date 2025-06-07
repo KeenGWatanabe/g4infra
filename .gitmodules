@@ -13,3 +13,6 @@
 [submodule "vpc2"]
 	path = vpc2
 	url = https://github.com/SJArpita/arp-tf-vpc-nat-eip-ec2
+[submodule "website"]
+	path = website
+	url = https://github.com/KeenGWatanabe/ce994website

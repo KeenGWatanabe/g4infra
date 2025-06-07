@@ -25,7 +25,7 @@ git commit -m "Removed tf-backend submodule"
 branch 'rger' set up to track 'origin/rger'.
 "
 the create a pull-request and check if merge is able.
-![PR merge check](/g4infra/images/PRcompare.png)
+![PR merge check](/images/PRcompare.png)
 
 
 
