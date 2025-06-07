@@ -3,16 +3,16 @@ Branching strategy video
 https://youtu.be/EkIpvxbtu5Y
 
 Where is it store in S3 bucket
-![in S3 bucket](/images/s3bucketStateFiles.png)
+![in S3 bucket](/G4ecs/images/s3bucketStateFiles.png)
 
 When conflicts occurs:
-![git conflicts](/images/gitConflicts.png)
+![git conflicts](/G4ecs/images/gitConflicts.png)
 
 Checking codes, it has become 2 different code base
-![code base](/images/checkingCodeBase.png)
+![code base](/G4ecs/images/checkingCodeBase.png)
 
 Put on hold by using `git merge –abort` abort the merge
-![abort merge](/images/abortMerge.png)
+![abort merge](/G4ecs/images/abortMerge.png)
 Back to own branch which is still untainted.
 
 issue is what happens to tfstate files if each feature branch is stored differently
