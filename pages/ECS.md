@@ -15,7 +15,7 @@
 
 # 8. Infrastructure Diagram
 _manually handdrawn from draw.io_
-![image](https://github.com/user-attachments/assets/76023952-40a6-431d-b8f7-546427b2eb0f) 
+![image](https://github.com/user-attachments/assets/376d904b-915b-42b3-bb04-d3f67809b9a0)
 
 
 Summary:
