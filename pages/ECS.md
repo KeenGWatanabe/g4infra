@@ -14,7 +14,8 @@
 ![ECSmonitoring](/images/ECSmonitoring.png)
 
 # 8. Infrastructure Diagram
-![image](https://github.com/user-attachments/assets/76023952-40a6-431d-b8f7-546427b2eb0f) manually handdrawn from draw.io
+_manually handdrawn from draw.io_
+![image](https://github.com/user-attachments/assets/76023952-40a6-431d-b8f7-546427b2eb0f) 
 
 
 Summary:
