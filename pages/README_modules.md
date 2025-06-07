@@ -1,4 +1,4 @@
-# steps
+# Adding submodules steps
 ```
 cd /path/to/your/main/repo
 git submodule add <repository-url> G4app
@@ -9,6 +9,17 @@ git add .
 git commit -m "add submodule"
 git push origin -u branch
 ```
+-----------------CAUTION!---------------
+# Removing submodules
+git submodule deinit -f vpc
+git rm -f vpc
+Remove-Item -Recurse -Force vpc
+git config -f .gitmodules --remove-section submodule.vpc
+git config -f .git/config --remove-section submodule.vpc
+
+git add .gitmodules
+git commit -m "Removed tf-backend submodule"
+---------------------------------------------
 "
    51d37d4..2aa49be  rger -> rger
 branch 'rger' set up to track 'origin/rger'.
